@@ -366,7 +366,7 @@ input[aria-invalid] {
 }
 @media (min-width: 760px) {
   .filters {
-    grid-template-columns: 2fr 1fr auto;
+    grid-template-columns: minmax(12rem, 2fr) minmax(10rem, 1fr) max-content;
   }
 }
 .segmented {
@@ -376,7 +376,7 @@ input[aria-invalid] {
   overflow: hidden;
 }
 .segmented button {
-  flex: 1;
+  flex: 1 0 auto;
   min-height: var(--tap-size);
   padding: 0 0.8rem;
   border: 0;
