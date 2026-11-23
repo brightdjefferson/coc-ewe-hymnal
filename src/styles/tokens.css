@@ -24,7 +24,20 @@
 @font-face {
   font-family: 'Noto Sans Ewe';
   src: url('/fonts/noto-sans-ewe-700.woff2') format('woff2');
-  font-weight: 700;
+  font-weight: 600 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans Ewe';
+  src: url('/fonts/noto-sans-ewe-800.woff2') format('woff2');
+  font-weight: 800 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Serif Ewe';
+  src: url('/fonts/noto-serif-ewe-400i.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -46,49 +59,72 @@
   --space-4: 1.5rem;
   --space-5: 2.5rem;
 
-  --radius: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-sm: 12px;
   --tap-size: 44px; /* minimum button size */
+  --shadow: 0 1px 2px rgb(20 33 61 / 0.06), 0 4px 14px rgb(20 33 61 / 0.05);
 
-  /* Light theme (default). All text/background pairs pass WCAG AA. */
-  --color-bg: #faf7f2;
+  /* "Calm" theme, light. Every text/background pair passes WCAG AA. */
+  --color-bg: #f3f5f8; /* mist */
   --color-surface: #ffffff;
-  --color-text: #1c2326;
-  --color-text-muted: #4f5b60;
-  --color-primary: #1f4e5f;
+  --color-surface-2: #eef1f5;
+  --color-text: #14213d; /* night blue */
+  --color-text-muted: #56617a;
+  --color-primary: #14213d;
   --color-on-primary: #ffffff;
-  --color-accent: #8a4b14;
-  --color-border: #d9d2c5;
+  --color-accent: #a3461e; /* sunset, dark enough for text */
+  --color-sunset: #f08a5d; /* sunset, for shapes and highlights */
+  --color-on-sunset: #14213d;
+  --color-hero: #14213d;
+  --color-on-hero: #ffffff;
+  --color-on-hero-muted: #c9d1e0;
+  --color-border: #dde2ea;
   --color-ok: #1d6b3a;
-  --color-warn: #8a4b14;
-  --color-error: #a3262a;
+  --color-warn: #a14a12;
+  --color-error: #b42318;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --color-bg: #0f1c21;
-    --color-surface: #17282e;
-    --color-text: #eef1ef;
-    --color-text-muted: #b5c0c2;
-    --color-primary: #8fc7d6;
-    --color-on-primary: #0f1c21;
-    --color-accent: #f0b979;
-    --color-border: #2f454c;
-    --color-ok: #8fd4a6;
-    --color-warn: #f0b979;
-    --color-error: #ff9a9a;
+    --color-bg: #0b1222;
+    --color-surface: #141f36;
+    --color-surface-2: #1b2842;
+    --color-text: #eef2f8;
+    --color-text-muted: #a9b4c8;
+    --color-primary: #eef2f8;
+    --color-on-primary: #0b1222;
+    --color-accent: #f5a27a;
+    --color-sunset: #f08a5d;
+    --color-on-sunset: #0b1222;
+    --color-hero: #1e2f55;
+    --color-on-hero: #ffffff;
+    --color-on-hero-muted: #c9d1e0;
+    --color-border: #2a3a58;
+    --color-ok: #7fd1a0;
+    --color-warn: #f5b27a;
+    --color-error: #ff9c94;
+    --shadow: none;
   }
 }
 
 :root[data-theme='dark'] {
-  --color-bg: #0f1c21;
-  --color-surface: #17282e;
-  --color-text: #eef1ef;
-  --color-text-muted: #b5c0c2;
-  --color-primary: #8fc7d6;
-  --color-on-primary: #0f1c21;
-  --color-accent: #f0b979;
-  --color-border: #2f454c;
-  --color-ok: #8fd4a6;
-  --color-warn: #f0b979;
-  --color-error: #ff9a9a;
+  --color-bg: #0b1222;
+  --color-surface: #141f36;
+  --color-surface-2: #1b2842;
+  --color-text: #eef2f8;
+  --color-text-muted: #a9b4c8;
+  --color-primary: #eef2f8;
+  --color-on-primary: #0b1222;
+  --color-accent: #f5a27a;
+  --color-sunset: #f08a5d;
+  --color-on-sunset: #0b1222;
+  --color-hero: #1e2f55;
+  --color-on-hero: #ffffff;
+  --color-on-hero-muted: #c9d1e0;
+  --color-border: #2a3a58;
+  --color-ok: #7fd1a0;
+  --color-warn: #f5b27a;
+  --color-error: #ff9c94;
+  --shadow: none;
 }

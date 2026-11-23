@@ -83,8 +83,8 @@ export function useApplySettings() {
     const meta = document.querySelectorAll('meta[name="theme-color"]')
     meta.forEach((m) => {
       const media = m.getAttribute('media') ?? ''
-      if (s.theme !== 'system') m.setAttribute('content', s.theme === 'dark' ? '#0f1c21' : '#1f4e5f')
-      else m.setAttribute('content', media.includes('dark') ? '#0f1c21' : '#1f4e5f')
+      if (s.theme !== 'system') m.setAttribute('content', s.theme === 'dark' ? '#0b1222' : '#f3f5f8')
+      else m.setAttribute('content', media.includes('dark') ? '#0b1222' : '#f3f5f8')
     })
   }, [s.textScale, s.theme])
 }

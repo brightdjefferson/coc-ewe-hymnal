@@ -18,6 +18,7 @@ export default function HymnPage() {
   const fav = useFavorites()
   const recent = useRecent()
   const [jump, setJump] = useState(false)
+  const [sizeOpen, setSizeOpen] = useState(false)
   const touch = useRef<{ x: number; y: number } | null>(null)
 
   const col = collectionBySlug(slug ?? '')
@@ -78,45 +79,63 @@ export default function HymnPage() {
       }}
     >
       <div className="hymn-top">
-        <Link to={`/c/${col.slug}`} className="back" aria-label={`Back to ${displayName(col)}`}>
-          ‹
+        <Link to={`/c/${col.slug}`} className="sq-btn" aria-label={`Back to ${displayName(col)}`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+            <path d="m15 6-6 6 6 6" />
+          </svg>
         </Link>
-        <span className="hymn-col">{displayName(col)}</span>
-        <button className={`icon-btn fav${isFav ? ' on' : ''}`} onClick={() => fav.toggle(hymn.id)} aria-pressed={isFav}
+        <span className="spacer" />
+        <button className={`sq-btn${sizeOpen ? ' on' : ''}`} onClick={() => setSizeOpen((v) => !v)} aria-expanded={sizeOpen} aria-label="Text size">
+          Aa
+        </button>
+        <button className={`sq-btn fav${isFav ? ' on' : ''}`} onClick={() => fav.toggle(hymn.id)} aria-pressed={isFav}
           aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}>
-          {isFav ? '♥' : '♡'}
+          <svg width="22" height="22" viewBox="0 0 24 24" fill={isFav ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 20s-7-4.4-8.7-8.6C2 8.3 4 5 7.2 5c1.9 0 3.2 1 4.8 2.8C13.6 6 14.9 5 16.8 5 20 5 22 8.3 20.7 11.4 19 15.6 12 20 12 20z" />
+          </svg>
         </button>
       </div>
+      {sizeOpen && (
+        <div className="size-pop" role="group" aria-label="Text size">
+          <button className="btn" onClick={() => setSettings({ textScale: Math.max(0.85, +(settings.textScale - 0.15).toFixed(2)) })} aria-label="Smaller text">
+            A−
+          </button>
+          <span className="size-val">{Math.round(settings.textScale * 100)}%</span>
+          <button className="btn big" onClick={() => setSettings({ textScale: Math.min(1.75, +(settings.textScale + 0.15).toFixed(2)) })} aria-label="Larger text">
+            A+
+          </button>
+        </div>
+      )}
 
       <header className="hymn-head">
-        <span className="hymn-number">{hymn.number}</span>
-        <div>
-          {hymn.title_ee && (
-            <h1 lang="ee" className="hymn-title">
-              {hymn.title_ee}
-            </h1>
-          )}
-          {hymn.title_en &&
-            (hymn.title_ee ? (
-              <p className="hymn-subtitle" lang="en">
-                {hymn.title_en}
-              </p>
-            ) : (
-              <h1 className="hymn-title">{hymn.title_en}</h1>
-            ))}
-          {cats.length > 0 && (
-            <p className="hymn-cats">
-              {cats.map((c) => (
-                <Link key={c.id} to={`/categories/${c.slug}`} className="tag">
-                  {displayName(c)}
-                </Link>
-              ))}
+        <p className="hymn-kicker">
+          {displayName(col)} · No. {hymn.number}
+        </p>
+        {hymn.title_ee && (
+          <h1 lang="ee" className="hymn-title">
+            {hymn.title_ee}
+          </h1>
+        )}
+        {hymn.title_en &&
+          (hymn.title_ee ? (
+            <p className="hymn-subtitle" lang="en">
+              {hymn.title_en}
             </p>
-          )}
-        </div>
+          ) : (
+            <h1 className="hymn-title">{hymn.title_en}</h1>
+          ))}
+        {cats.length > 0 && (
+          <p className="hymn-cats">
+            {cats.map((c) => (
+              <Link key={c.id} to={`/categories/${c.slug}`} className="tag">
+                {displayName(c)}
+              </Link>
+            ))}
+          </p>
+        )}
       </header>
 
-      <div className="segmented lang-switch" role="group" aria-label="Language">
+      <div className="pills lang-switch" role="group" aria-label="Language">
         {(['ee', 'en', 'both'] as Lang[]).map((l) => (
           <button key={l} type="button" className={lang === l ? 'on' : ''} aria-pressed={lang === l} onClick={() => setSettings({ lang: l })}>
             {LANG_LABEL[l]}
@@ -128,18 +147,20 @@ export default function HymnPage() {
 
       <nav className="hymn-nav" aria-label="Other hymns">
         {prev ? (
-          <Link to={hymnPath(prev)} className="btn" rel="prev" aria-label={`Previous: number ${prev.number}`}>
-            ‹ {prev.number}
+          <Link to={hymnPath(prev)} className="nav-step" rel="prev" aria-label={`Previous: number ${prev.number}`}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>
+            {prev.number}
           </Link>
         ) : (
           <span />
         )}
-        <button className="btn" onClick={() => setJump(true)}>
+        <button className="nav-jump" onClick={() => setJump(true)}>
           # Go to number
         </button>
         {next ? (
-          <Link to={hymnPath(next)} className="btn" rel="next" aria-label={`Next: number ${next.number}`}>
-            {next.number} ›
+          <Link to={hymnPath(next)} className="nav-step" rel="next" aria-label={`Next: number ${next.number}`}>
+            {next.number}
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
           </Link>
         ) : (
           <span />
@@ -199,8 +220,8 @@ function Words({ hymn, lang, onSwitch }: { hymn: Hymn; lang: Lang; onSwitch: (l:
           const n = nums[i]
           return (
             <div key={i} className={`pair ${b.kind}`}>
-              <BlockView block={b} label={b.kind === 'verse' ? String(n) : blockLabel(b.kind)} lang="ee" />
-              <BlockView block={en[i]} label={en[i].kind === 'verse' ? String(n) : blockLabel(en[i].kind)} lang="en" secondary />
+              <BlockView block={b} label={b.kind === 'verse' ? `Verse ${n}` : blockLabel(b.kind)} lang="ee" />
+              <BlockView block={en[i]} label={en[i].kind === 'verse' ? `Verse ${n}` : blockLabel(en[i].kind)} lang="en" secondary />
             </div>
           )
         })}

@@ -79,13 +79,19 @@ scripts/         maintenance notes (e.g. how the fonts were built)
 
 ### Fonts
 
-The app bundles its own copies of **Noto Serif** and **Noto Sans** (SIL Open Font
+The app bundles its own copies of **Noto Serif** (regular, italic, bold) and **Noto Sans** (regular, bold, extra-bold) (SIL Open Font
 License, see `public/fonts/OFL.txt`), cut down to Latin letters, all Ewe letters
 (ɖ ɛ ɔ ŋ ƒ ʋ ɣ and capitals) and every tone mark, including the rising (ˇ) and
 falling (ˆ) marks that the standard web font packages leave out. Nothing is
 loaded from Google or any other outside server.
 
 ---
+
+## Logo
+
+Sunrise over an open hymnal, with the Ewe letter ɛ drawn as a music note and an orange
+ribbon bookmark. Source: `public/favicon.svg` (and `src/components/Logo.tsx`); app icons in
+`public/icons/` are made from it.
 
 ## Build phases
 
@@ -94,6 +100,7 @@ loaded from Google or any other outside server.
 - [x] **Phase 2**: reader app (library, lists, hymn view, search, categories)
 - [x] **Bulk upload** (brought forward from Phase 5): Word, PDF, CSV and JSON, with preview
 - [x] **Phase 3**: offline use and automatic updates
+- [x] **Design pass**: “Calm” look (night blue, sunset orange, mist), new logo, light/dark
 - [ ] **Phase 3b**: melody playback
 - [ ] **Phase 4**: service queue, sermon notes, Hymn of the Day
 - [ ] **Phase 5**: bulk upload/export, change history, content checks, privacy page

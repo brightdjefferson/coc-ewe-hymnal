@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" fill="#1f4e5f"/>
-  <g transform="translate(4.8 4.8) scale(0.85)">
-    <path d="M14 18c7-3 13-3 18 1v29c-5-4-11-4-18-1z" fill="#f6efe3"/>
-    <path d="M50 18c-7-3-13-3-18 1v29c5-4 11-4 18-1z" fill="#e9dcc4"/>
-    <path d="M41 24v14.5a3.5 3 0 1 1-2-2.7V24z" fill="#1f4e5f"/>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><rect width="128" height="128" fill="#14213D"/><g transform="translate(12.8 12.8) scale(0.8)"><circle cx="64" cy="54" r="36" fill="#F08A5D"/><path d="M71 34 C66 25 48 26 47 37 C46 45 53 49 61 49 C51 49 44 54 45 63 C47 74 65 75 73 67" fill="none" stroke="#14213D" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M79 70 V27" stroke="#14213D" stroke-width="7.5" stroke-linecap="round"/><path d="M79 24 C89 27 95 35 91 47 C89 41 85 38 79 37 Z" fill="#14213D"/><path d="M16 80 C33 72 50 72 64 82 C78 72 95 72 112 80 V106 C95 99 78 99 64 109 C50 99 33 99 16 106 Z" fill="#FFFFFF"/><path d="M64 82 V109" stroke="#DDE2EA" stroke-width="2.5"/><path d="M60 107 V121 L64 117 L68 121 V107 Z" fill="#F08A5D"/></g></svg>

@@ -19,8 +19,8 @@ export default defineConfig({
         scope: '/',
         display: 'standalone',
         orientation: 'any',
-        background_color: '#faf7f2',
-        theme_color: '#1f4e5f',
+        background_color: '#f3f5f8',
+        theme_color: '#14213d',
         categories: ['books', 'education', 'music'],
         icons: [
           { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },

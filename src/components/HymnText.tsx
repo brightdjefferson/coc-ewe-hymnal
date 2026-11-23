@@ -24,7 +24,7 @@ export default function HymnText({ blocks, lang, emptyMessage }: Props) {
         const isVerse = b.kind === 'verse'
         return (
           <section key={i} className={`hymn-block ${b.kind}`}>
-            <span className="hymn-label">{isVerse ? numbers[i] : blockLabel(b.kind)}</span>
+            <span className="hymn-label">{isVerse ? `Verse ${numbers[i]}` : blockLabel(b.kind)}</span>
             <p className="hymn-lines">{b.body}</p>
           </section>
         )
