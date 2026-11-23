@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { search } from '../lib/search'
-import { displayName, useLibrary } from './library'
+import { displayName, useLibrary, useLibraryState, type UpdateResult } from './library'
+import { usePwa } from './usePwa'
+import { isInstalled, isIOS } from '../pwa'
 import { DEFAULT_SETTINGS, useFavorites, useRecent, useSettings, type Settings } from './prefs'
 import { HymnRow, SearchBox } from './components'
 import { CategoryChips } from './CategoryChips'
@@ -227,6 +229,9 @@ export function SettingsPage() {
         />
       </section>
 
+      <UpdatesCard />
+      <InstallCard />
+
       <button className="btn btn-quiet" onClick={() => set(DEFAULT_SETTINGS)}>
         Reset settings
       </button>
@@ -256,5 +261,75 @@ function Choice<T extends string>({ value, onChange, options, label }: {
         </button>
       ))}
     </div>
+  )
+}
+
+const UPDATE_TEXT: Record<UpdateResult, string> = {
+  updated: 'Hymns updated.',
+  current: 'You have the latest hymns.',
+  offline: 'No internet connection. You can still read every hymn; try again when you are online.',
+  error: 'Could not check right now. Please try again later.',
+}
+
+function UpdatesCard() {
+  const { library } = useLibrary()
+  const { checkForUpdates, checking, lastChecked } = useLibraryState()
+  const [result, setResult] = useState<UpdateResult | null>(null)
+  const when = lastChecked ?? library.fetchedAt
+  return (
+    <section className="card">
+      <h2>Hymn updates</h2>
+      <p className="muted small">
+        {library.hymns.length} hymns saved on this phone, ready to read without internet.
+        <br />
+        Last checked: {new Date(when).toLocaleString()}
+      </p>
+      <button className="btn" disabled={checking} onClick={async () => setResult(await checkForUpdates({ quiet: true }))}>
+        {checking ? 'Checking…' : 'Check for updates'}
+      </button>
+      {result && !checking && (
+        <p className="small" role="status" style={{ marginTop: '0.75rem' }}>
+          {UPDATE_TEXT[result]}
+        </p>
+      )}
+    </section>
+  )
+}
+
+function InstallCard() {
+  const p = usePwa()
+  if (isInstalled())
+    return (
+      <section className="card">
+        <h2>App</h2>
+        <p className="muted small">The hymnal is installed on this device. ✓</p>
+      </section>
+    )
+  return (
+    <section className="card">
+      <h2>Put the hymnal on your home screen</h2>
+      {p.installPrompt ? (
+        <>
+          <p className="muted small">It opens like an app and works without internet.</p>
+          <button className="btn btn-primary" onClick={() => p.installPrompt?.prompt()}>
+            Install app
+          </button>
+        </>
+      ) : isIOS() ? (
+        <ol className="steps small">
+          <li>Open this page in <strong>Safari</strong>.</li>
+          <li>
+            Tap the <strong>Share</strong> button (the square with an arrow pointing up).
+          </li>
+          <li>
+            Choose <strong>Add to Home Screen</strong>, then <strong>Add</strong>.
+          </li>
+        </ol>
+      ) : (
+        <p className="muted small">
+          Open your browser’s menu (⋮) and choose <strong>Install app</strong> or <strong>Add to Home screen</strong>.
+        </p>
+      )}
+    </section>
   )
 }

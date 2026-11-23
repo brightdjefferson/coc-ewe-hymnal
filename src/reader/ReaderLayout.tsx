@@ -1,6 +1,8 @@
+import { useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import { LibraryProvider, useLibraryState } from './library'
 import { useApplySettings } from './prefs'
+import { usePwa } from './usePwa'
 import './reader.css'
 
 const NAV = [
@@ -19,6 +21,7 @@ export default function ReaderLayout() {
         <div className="reader-content">
           <Gate />
         </div>
+        <Messages />
         <nav className="bottom-nav" aria-label="Main">
           {NAV.map((n) => (
             <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => (isActive ? 'on' : '')}>
@@ -54,4 +57,31 @@ function Gate() {
       </div>
     )
   return <Outlet />
+}
+
+function Messages() {
+  const { notice, clearNotice } = useLibraryState()
+  const p = usePwa()
+  useEffect(() => {
+    if (!notice) return
+    const t = setTimeout(clearNotice, 4000)
+    return () => clearTimeout(t)
+  }, [notice, clearNotice])
+  return (
+    <div className="toasts" aria-live="polite">
+      {p.needRefresh && (
+        <div className="toast">
+          <span>A new version of the app is ready.</span>
+          <button className="btn btn-primary" onClick={() => p.update()}>
+            Update
+          </button>
+        </div>
+      )}
+      {notice && (
+        <div className="toast" role="status" onClick={clearNotice}>
+          <span>✓ {notice}</span>
+        </div>
+      )}
+    </div>
+  )
 }

@@ -1,11 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { askToKeepStorage, loadSavedLibrary, saveLibrary } from './offlineStore'
 import { supabase } from '../lib/supabase'
 import { buildIndex, type SearchIndex } from '../lib/search'
 import type { VerseKind } from '../lib/hymnText'
 import type { Category, Collection, Hymn, Library } from '../lib/types'
 
-// Loads every published hymn once. (Phase 3 will also keep a copy on the
-// device so the app opens with no internet.)
+// Loads every published hymn. A copy is kept on the phone, so the app opens
+// instantly from it (even with no internet) and then quietly checks the
+// database's update counter; if anything changed, it downloads a new copy.
 
 const PAGE = 1000
 
@@ -60,38 +62,147 @@ async function fetchLibrary(): Promise<Library> {
   }
 }
 
+async function fetchVersion(): Promise<number> {
+  if (!supabase) throw new Error('not-configured')
+  const { data, error } = await supabase
+    .from('content_version')
+    .select('version')
+    .eq('id', 1)
+    .abortSignal(AbortSignal.timeout(10000))
+    .maybeSingle()
+  if (error) throw new Error(error.message)
+  return (data?.version as number) ?? 0
+}
+
+function friendly(e: Error) {
+  return e.message === 'not-configured'
+    ? 'The hymn database is not set up yet.'
+    : /fetch|network|load failed|offline|abort|timeout/i.test(e.message) || !navigator.onLine
+      ? 'No internet connection.'
+      : e.message
+}
+
 type State =
   | { kind: 'loading' }
   | { kind: 'error'; message: string }
   | { kind: 'ready'; library: Library }
 
+export type UpdateResult = 'updated' | 'current' | 'offline' | 'error'
+
 interface Ctx {
   state: State
   reload: () => void
+  /** Checks the database for changes and downloads them. */
+  checkForUpdates: (opts?: { quiet?: boolean }) => Promise<UpdateResult>
+  checking: boolean
+  lastChecked: string | null
+  /** A short message to show once, e.g. "Hymns updated". */
+  notice: string | null
+  clearNotice: () => void
 }
 
 const LibraryContext = createContext<Ctx | null>(null)
 
+const RECHECK_MS = 5 * 60 * 1000 // when the app comes back to the screen
+
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>({ kind: 'loading' })
-  const load = useCallback(() => {
-    setState((s) => (s.kind === 'ready' ? s : { kind: 'loading' }))
-    fetchLibrary()
-      .then((library) => setState({ kind: 'ready', library }))
-      .catch((e: Error) =>
-        setState({
-          kind: 'error',
-          message:
-            e.message === 'not-configured'
-              ? 'The hymn database is not set up yet.'
-              : /fetch|network|load failed/i.test(e.message)
-                ? 'Could not connect. Please check your internet connection and try again.'
-                : e.message,
-        }),
-      )
+  const [checking, setChecking] = useState(false)
+  const [lastChecked, setLastChecked] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
+  const current = useRef<Library | null>(null)
+  const busy = useRef<Promise<UpdateResult> | null>(null)
+  const lastCheckAt = useRef(0)
+
+  const use = useCallback((lib: Library) => {
+    current.current = lib
+    setState({ kind: 'ready', library: lib })
   }, [])
-  useEffect(() => load(), [load])
-  return <LibraryContext.Provider value={{ state, reload: load }}>{children}</LibraryContext.Provider>
+
+  const checkForUpdates = useCallback(
+    (opts: { quiet?: boolean } = {}): Promise<UpdateResult> => {
+      if (busy.current) return busy.current
+      const run = async (): Promise<UpdateResult> => {
+        if (!navigator.onLine && current.current) return 'offline'
+        setChecking(true)
+        lastCheckAt.current = Date.now()
+        try {
+          const have = current.current
+          if (have) {
+            const v = await fetchVersion()
+            setLastChecked(new Date().toISOString())
+            if (v === have.version) return 'current'
+          }
+          const fresh = await fetchLibrary()
+          await saveLibrary(fresh)
+          askToKeepStorage()
+          setLastChecked(fresh.fetchedAt)
+          const hadCopy = !!have
+          use(fresh)
+          if (hadCopy && !opts.quiet) setNotice('Hymns updated')
+          return 'updated'
+        } catch (e) {
+          const msg = friendly(e as Error)
+          if (!current.current) setState({ kind: 'error', message: msg === 'No internet connection.' ? 'No internet connection. Connect once to download the hymns; after that the app works offline.' : msg })
+          return msg === 'No internet connection.' ? 'offline' : 'error'
+        } finally {
+          setChecking(false)
+        }
+      }
+      // Always release the "checking" lock, however the check ends.
+      const p = run().finally(() => {
+        busy.current = null
+      })
+      busy.current = p
+      return p
+    },
+    [use],
+  )
+
+  // Start: open from the phone's copy, then check for changes.
+  useEffect(() => {
+    let alive = true
+    ;(async () => {
+      const saved = await loadSavedLibrary()
+      if (!alive) return
+      if (saved) {
+        use(saved)
+        setLastChecked(saved.fetchedAt)
+      }
+      if (!saved || navigator.onLine) checkForUpdates({ quiet: false })
+    })()
+    return () => {
+      alive = false
+    }
+  }, [use, checkForUpdates])
+
+  // Check again when the phone reconnects, or the app comes back on screen.
+  useEffect(() => {
+    const onOnline = () => checkForUpdates()
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && navigator.onLine && Date.now() - lastCheckAt.current > RECHECK_MS)
+        checkForUpdates()
+    }
+    window.addEventListener('online', onOnline)
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      window.removeEventListener('online', onOnline)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [checkForUpdates])
+
+  const reload = useCallback(() => {
+    setState({ kind: 'loading' })
+    checkForUpdates()
+  }, [checkForUpdates])
+
+  return (
+    <LibraryContext.Provider
+      value={{ state, reload, checkForUpdates, checking, lastChecked, notice, clearNotice: () => setNotice(null) }}
+    >
+      {children}
+    </LibraryContext.Provider>
+  )
 }
 
 export function useLibraryState() {

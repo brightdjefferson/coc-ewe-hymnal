@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import './index.css'
+import { startPwa } from './pwa'
 import CheckPage from './App.tsx'
 import AdminLayout from './admin/AdminLayout.tsx'
 import HymnListPage from './admin/HymnListPage.tsx'
@@ -43,6 +44,8 @@ const router = createBrowserRouter([
     ],
   },
 ])
+
+startPwa()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

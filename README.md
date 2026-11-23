@@ -62,7 +62,7 @@ Other commands:
 ## Folder guide
 
 ```
-public/          icons and the bundled fonts (fonts/ — see fonts note below)
+public/          icons (icons/), the bundled fonts (fonts/ — see fonts note below)
 src/
   styles/        colours, sizes, fonts, light/dark themes (tokens.css)
   lib/           connection to Supabase; later: search, offline storage
@@ -93,12 +93,21 @@ loaded from Google or any other outside server.
 - [x] **Phase 1**: database, security rules, admin login and hymn editor
 - [x] **Phase 2**: reader app (library, lists, hymn view, search, categories)
 - [x] **Bulk upload** (brought forward from Phase 5): Word, PDF, CSV and JSON, with preview
-- [ ] **Phase 3**: offline use and automatic updates
+- [x] **Phase 3**: offline use and automatic updates
 - [ ] **Phase 3b**: melody playback
 - [ ] **Phase 4**: service queue, sermon notes, Hymn of the Day
 - [ ] **Phase 5**: bulk upload/export, change history, content checks, privacy page
 - [ ] **Phase 6** (optional): App Store and Google Play
 - [ ] **Phase 7** (optional): sing to find a hymn
+
+## How offline works
+
+- The first visit downloads every published hymn into the phone's storage (IndexedDB).
+- Later visits open instantly from that copy, then check `content_version` in the
+  database; if it changed, the whole library is downloaded again and "Hymns updated" is shown.
+- A service worker (vite-plugin-pwa / Workbox) keeps the app's own files on the phone.
+  When a new version of the app is published, readers see "A new version of the app is ready".
+- The admin site still needs internet. The Word/PDF readers are not stored offline.
 
 ## Content rules
 
