@@ -4,6 +4,9 @@
 import { parseHymnText, type Block } from './hymnText'
 import { fold } from './fold'
 
+/** Placed between pages by the PDF reader (see pdfLines.ts). */
+export const PAGE_BREAK = '\u0000page-break'
+
 export type RightsStatus = 'public_domain' | 'permission_granted' | 'original_work' | 'unknown'
 
 /** One hymn as found in the file, before checking. */
@@ -19,6 +22,8 @@ export interface RawHymn {
   other_names: string
   ewe: string
   english: string
+  /** Set when the hymn's words run over a page break in a PDF. */
+  crossesPage?: boolean
 }
 
 export interface Named {
@@ -83,6 +88,10 @@ export function parseWordLines(lines: string[]): RawHymn[] {
   }
 
   lines.forEach((rawLine, i) => {
+    if (rawLine === PAGE_BREAK) {
+      if (cur && lang) (cur as RawHymn).crossesPage = true
+      return
+    }
     const line = rawLine.replace(/ /g, ' ').trim()
     const hymn = line.match(HYMN_RE)
     if (hymn) {
@@ -303,6 +312,9 @@ export function checkHymns(
     if (!ee.length && !en.length) warnings.push('No words yet. It will be saved as a draft without words.')
     else if (!en.length) warnings.push('No English words.')
     else if (!ee.length && col?.slug !== 'english-hymns') warnings.push('No Ewe words.')
+
+    if (r.crossesPage)
+      warnings.push('This hymn goes over a page break in the PDF. Open it and check the verses are split correctly; a verse break that falls on a page break can be missed.')
 
     // Rights
     let rights = rightsOf(r.rights)

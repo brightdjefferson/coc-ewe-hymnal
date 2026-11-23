@@ -34,6 +34,15 @@ async function readFile(file: File): Promise<{ hymns: RawHymn[]; problem?: strin
       ? { hymns }
       : { hymns, problem: 'No hymns were found. Each hymn must start with a line like “Hymn 12”. See the Word template.' }
   }
+  if (name.endsWith('.pdf')) {
+    const { readPdfLines } = await import('../lib/pdfLines')
+    const { lines, problem } = await readPdfLines(await file.arrayBuffer())
+    if (problem) return { hymns: [], problem }
+    const hymns = parseWordLines(lines)
+    return hymns.length
+      ? { hymns }
+      : { hymns, problem: 'No hymns were found in this PDF. Each hymn must start with a line like “Hymn 12”, as in the Word template.' }
+  }
   if (name.endsWith('.doc')) return { hymns: [], problem: 'This is an old-style Word file (.doc). In Word, choose File → Save As → Word Document (.docx), then upload that.' }
   const text = await file.text()
   if (name.endsWith('.json')) return jsonToRaw(text)
@@ -42,7 +51,7 @@ async function readFile(file: File): Promise<{ hymns: RawHymn[]; problem?: strin
     return csvToRaw(parseCsv(text))
   }
   if (/\.xlsx?$/.test(name)) return { hymns: [], problem: 'Excel files can’t be read directly. In Excel, choose File → Save As → CSV UTF-8 (.csv), then upload that.' }
-  return { hymns: [], problem: 'Please choose a Word (.docx), CSV (.csv) or JSON (.json) file.' }
+  return { hymns: [], problem: 'Please choose a Word (.docx), PDF (.pdf), CSV (.csv) or JSON (.json) file.' }
 }
 
 function download(name: string, content: string, type: string) {
@@ -184,13 +193,17 @@ export default function UploadPage() {
                   <button className="btn btn-primary" onClick={() => inputRef.current?.click()}>
                     Choose a file
                   </button>
-                  <p className="muted small">Word (.docx), CSV (.csv) or JSON (.json). Nothing is saved until you confirm.</p>
+                  <p className="muted small">Word (.docx), PDF (.pdf), CSV (.csv) or JSON (.json). Nothing is saved until you confirm.</p>
+                  <p className="muted small">
+                    A Word file is the most reliable. With a PDF, check the preview carefully: verse breaks are worked out from the
+                    spacing between lines.
+                  </p>
                 </>
               )}
               <input
                 ref={inputRef}
                 type="file"
-                accept=".docx,.csv,.json,.txt,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/csv,application/json"
+                accept=".docx,.pdf,.csv,.json,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/csv,application/json"
                 hidden
                 aria-label="Choose a file to upload"
                 onChange={(e) => {

@@ -105,3 +105,13 @@ describe('JSON', () => {
     expect(jsonToRaw('nope').problem).toMatch(/could not be read/)
   })
 })
+
+describe('PDF page breaks', () => {
+  it('warns about hymns whose words cross a page break', () => {
+    const raw = parseWordLines(['Hymn 1', 'Ewe title: A', 'Rights: Original work', 'EWE', 'a', '\u0000page-break', 'b', '----', '\u0000page-break', 'Hymn 2', 'Ewe title: B', 'EWE', 'c'])
+    const c = checkHymns(raw, collections, categories, [])
+    expect(raw.map((r) => r.ewe)).toEqual(['a\nb', 'c'])
+    expect(c[0].warnings.join(' ')).toMatch(/page break/)
+    expect(c[1].warnings.join(' ')).not.toMatch(/page break/)
+  })
+})
