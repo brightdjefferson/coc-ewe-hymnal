@@ -1,0 +1,90 @@
+.page {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-3) var(--space-5);
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+.hero h1 {
+  font-family: var(--font-lyrics);
+  font-size: var(--text-title);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.muted {
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+  margin: 0 0 var(--space-3);
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-3) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.card h2 {
+  font-size: var(--text-large);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--space-2);
+}
+.glyph {
+  display: grid;
+  place-items: center;
+  min-height: 3.25rem;
+  font-family: var(--font-lyrics);
+  font-size: calc(1.75rem * var(--text-scale));
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.tones {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-lyrics);
+  font-size: var(--text-large);
+  text-align: center;
+}
+.tones th,
+.tones td {
+  padding: var(--space-2) var(--space-1);
+  border-bottom: 1px solid var(--color-border);
+}
+.tones th[scope='row'] {
+  font-family: var(--font-ui);
+  font-size: var(--text-small);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.lyrics {
+  font-family: var(--font-lyrics);
+}
+
+.status {
+  font-weight: 700;
+  margin: 0;
+}
+.status-connected {
+  color: var(--color-ok);
+}
+.status-not-configured,
+.status-checking {
+  color: var(--color-warn);
+}
+.status-unreachable {
+  color: var(--color-error);
+}

@@ -1,0 +1,94 @@
+/*
+  Design tokens: every colour, size and font used in the app lives here,
+  so the whole look can be changed in one place.
+*/
+
+@font-face {
+  font-family: 'Noto Serif Ewe';
+  src: url('/fonts/noto-serif-ewe-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Serif Ewe';
+  src: url('/fonts/noto-serif-ewe-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans Ewe';
+  src: url('/fonts/noto-sans-ewe-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Noto Sans Ewe';
+  src: url('/fonts/noto-sans-ewe-700.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  /* Fonts: the bundled Noto files cover every Ewe letter and tone mark. */
+  --font-lyrics: 'Noto Serif Ewe', 'Noto Serif', Georgia, serif;
+  --font-ui: 'Noto Sans Ewe', 'Noto Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Text size: the reader's text-size setting will scale this one number. */
+  --text-scale: 1;
+  --text-base: calc(1.125rem * var(--text-scale));
+  --text-small: calc(0.9375rem * var(--text-scale));
+  --text-large: calc(1.375rem * var(--text-scale));
+  --text-title: calc(1.75rem * var(--text-scale));
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+
+  --radius: 12px;
+  --tap-size: 44px; /* minimum button size */
+
+  /* Light theme (default). All text/background pairs pass WCAG AA. */
+  --color-bg: #faf7f2;
+  --color-surface: #ffffff;
+  --color-text: #1c2326;
+  --color-text-muted: #4f5b60;
+  --color-primary: #1f4e5f;
+  --color-on-primary: #ffffff;
+  --color-accent: #8a4b14;
+  --color-border: #d9d2c5;
+  --color-ok: #1d6b3a;
+  --color-warn: #8a4b14;
+  --color-error: #a3262a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #0f1c21;
+    --color-surface: #17282e;
+    --color-text: #eef1ef;
+    --color-text-muted: #b5c0c2;
+    --color-primary: #8fc7d6;
+    --color-on-primary: #0f1c21;
+    --color-accent: #f0b979;
+    --color-border: #2f454c;
+    --color-ok: #8fd4a6;
+    --color-warn: #f0b979;
+    --color-error: #ff9a9a;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f1c21;
+  --color-surface: #17282e;
+  --color-text: #eef1ef;
+  --color-text-muted: #b5c0c2;
+  --color-primary: #8fc7d6;
+  --color-on-primary: #0f1c21;
+  --color-accent: #f0b979;
+  --color-border: #2f454c;
+  --color-ok: #8fd4a6;
+  --color-warn: #f0b979;
+  --color-error: #ff9a9a;
+}
