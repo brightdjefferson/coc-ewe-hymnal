@@ -40,7 +40,8 @@ that one must never go into the app, Vercel or anywhere else.
 
 ## Tests
 
-`npm test` checks how pasted hymns are split into verses and choruses.
+`npm test` checks how pasted hymns are split into verses and choruses, and how search
+finds and ranks hymns (plain letters finding Ewe letters, typos, number ranking).
 
 ## Running it on a computer (optional, for developers)
 
@@ -65,8 +66,9 @@ public/          icons and the bundled fonts (fonts/ — see fonts note below)
 src/
   styles/        colours, sizes, fonts, light/dark themes (tokens.css)
   lib/           connection to Supabase; later: search, offline storage
-  App.tsx        Phase 0 check page (replaced by the Library in Phase 2)
-  admin/         the admin site (/admin): login, hymn list, editor, history
+  App.tsx        character and database check page (at /check)
+  reader/        the reader app: home, lists, hymn page, search, categories, favourites, settings
+  admin/         the admin site (/admin): login, hymn list, editor, history, collections & categories
   components/    shared pieces: Ewe character buttons, hymn text display
 supabase/
   migrations/    the database tables and security rules, numbered in order (Phase 1)
@@ -89,7 +91,7 @@ loaded from Google or any other outside server.
 
 - [x] **Phase 0**: project setup, accounts, Ewe character check
 - [x] **Phase 1**: database, security rules, admin login and hymn editor
-- [ ] **Phase 2**: reader app (library, lists, hymn view, search, categories)
+- [x] **Phase 2**: reader app (library, lists, hymn view, search, categories)
 - [ ] **Phase 3**: offline use and automatic updates
 - [ ] **Phase 3b**: melody playback
 - [ ] **Phase 4**: service queue, sermon notes, Hymn of the Day

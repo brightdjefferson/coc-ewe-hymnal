@@ -206,3 +206,79 @@ export async function restoreHymn(historyId: number): Promise<string> {
   throwIf(error)
   return data as string
 }
+
+// ---- Collections & categories ------------------------------------------------
+
+export type ListTable = 'collections' | 'categories'
+
+export interface ListItemInput {
+  name_ee: string | null
+  name_en: string | null
+}
+
+function slugify(s: string) {
+  return (
+    s
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .replace(/[ɖƉ]/g, 'd').replace(/[ɛƐ]/g, 'e').replace(/[ɔƆ]/g, 'o').replace(/[ŋŊ]/g, 'n')
+      .replace(/[ƒƑ]/g, 'f').replace(/[ʋƲ]/g, 'v').replace(/[ɣƔ]/g, 'g')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'item'
+  )
+}
+
+export async function addListItem(table: ListTable, item: ListItemInput, existing: Collection[]): Promise<void> {
+  const base = slugify(item.name_en || item.name_ee || '')
+  let slug = base
+  for (let i = 2; existing.some((x) => x.slug === slug); i++) slug = `${base}-${i}`
+  const sort_order = Math.max(0, ...existing.map((x) => x.sort_order)) + 1
+  const { error } = await db().from(table).insert({ slug, sort_order, ...item })
+  throwIf(error)
+}
+
+export async function updateListItem(table: ListTable, id: string, item: ListItemInput): Promise<void> {
+  const { error } = await db().from(table).update(item).eq('id', id)
+  throwIf(error)
+}
+
+export async function swapOrder(table: ListTable, a: Collection, b: Collection): Promise<void> {
+  // Give each the other's position (if equal, nudge so the order still changes).
+  const ao = a.sort_order, bo = b.sort_order === a.sort_order ? a.sort_order + 1 : b.sort_order
+  const r1 = await db().from(table).update({ sort_order: bo }).eq('id', a.id)
+  throwIf(r1.error)
+  const r2 = await db().from(table).update({ sort_order: ao }).eq('id', b.id)
+  throwIf(r2.error)
+}
+
+export async function deleteListItem(table: ListTable, id: string): Promise<void> {
+  const { error } = await db().from(table).delete().eq('id', id)
+  if (error && /foreign key|violates/i.test(error.message))
+    throw new Error('This collection still has hymns in it. Move or delete those hymns first.')
+  throwIf(error)
+}
+
+/** How many hymns (drafts included) use each category. */
+export async function categoryUsage(): Promise<Map<string, number>> {
+  const { data, error } = await db().from('hymn_categories').select('category_id')
+  throwIf(error)
+  const m = new Map<string, number>()
+  for (const r of data ?? []) m.set(r.category_id, (m.get(r.category_id) ?? 0) + 1)
+  return m
+}
+
+export async function setCategoryHymns(categoryId: string, hymnIds: string[], add: boolean): Promise<number> {
+  const { data, error } = await db().rpc('set_category_hymns', { p_category_id: categoryId, p_hymn_ids: hymnIds, p_add: add })
+  if (error && /set_category_hymns/i.test(error.message) && /not find|does not exist/i.test(error.message))
+    throw new Error('The bulk-category feature needs the second database setup file (0002). Please run it in Supabase first.')
+  throwIf(error)
+  return data as number
+}
+
+/** Which hymns are in a category (drafts included). */
+export async function hymnsInCategory(categoryId: string): Promise<Set<string>> {
+  const { data, error } = await db().from('hymn_categories').select('hymn_id').eq('category_id', categoryId)
+  throwIf(error)
+  return new Set((data ?? []).map((r) => r.hymn_id as string))
+}

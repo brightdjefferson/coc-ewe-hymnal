@@ -1,5 +1,5 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { Link, Outlet, useOutletContext } from 'react-router'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { Link, NavLink, Outlet, useOutletContext } from 'react-router'
 import { useAdminAuth } from './useAdminAuth'
 import { fetchCategories, fetchCollections, friendlyError, type Category, type Collection } from './api'
 import './admin.css'
@@ -8,6 +8,7 @@ export interface AdminContext {
   email: string
   collections: Collection[]
   categories: Category[]
+  reloadLists: () => Promise<void>
 }
 
 export function useAdmin() {
@@ -19,12 +20,19 @@ export default function AdminLayout() {
   const [lists, setLists] = useState<{ collections: Collection[]; categories: Category[] } | null>(null)
   const [loadError, setLoadError] = useState<string | null>(null)
 
+  const reloadLists = useCallback(async () => {
+    try {
+      const [collections, categories] = await Promise.all([fetchCollections(), fetchCategories()])
+      setLists({ collections, categories })
+      setLoadError(null)
+    } catch (e) {
+      setLoadError(friendlyError(e))
+    }
+  }, [])
+
   useEffect(() => {
-    if (state.kind !== 'admin') return
-    Promise.all([fetchCollections(), fetchCategories()])
-      .then(([collections, categories]) => setLists({ collections, categories }))
-      .catch((e) => setLoadError(friendlyError(e)))
-  }, [state.kind])
+    if (state.kind === 'admin') reloadLists()
+  }, [state.kind, reloadLists])
 
   if (state.kind === 'loading') return <Centered>Loading…</Centered>
   if (state.kind === 'no-database')
@@ -52,6 +60,15 @@ export default function AdminLayout() {
           <img src="/favicon.svg" alt="" width="32" height="32" />
           <span>Hymnal admin</span>
         </Link>
+        <nav className="admin-nav" aria-label="Admin">
+          <NavLink to="/admin" end>
+            Hymns
+          </NavLink>
+          <NavLink to="/admin/lists">Collections &amp; categories</NavLink>
+          <a href="/" target="_blank" rel="noopener">
+            Reader app ↗
+          </a>
+        </nav>
         <span className="admin-who" title={state.email}>
           {state.email}
         </span>
@@ -61,7 +78,7 @@ export default function AdminLayout() {
       </header>
       {loadError && <p className="alert alert-error">{loadError}</p>}
       {lists ? (
-        <Outlet context={{ email: state.email, ...lists } satisfies AdminContext} />
+        <Outlet context={{ email: state.email, ...lists, reloadLists } satisfies AdminContext} />
       ) : (
         !loadError && <p className="admin-loading">Loading…</p>
       )}
