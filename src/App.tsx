@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { checkConnection } from './lib/supabase'
+import { checkConnection, keyKind, type ConnectionResult } from './lib/supabase'
 import './App.css'
 
 // Phase 0 check page: proves every Ewe letter and tone mark displays
@@ -24,20 +24,20 @@ const VOWELS = ['a', 'e', 'ɛ', 'i', 'o', 'ɔ', 'u']
 const ALPHABET =
   'a b d ɖ dz e ɛ f ƒ g gb ɣ h x i k kp l m n ny ŋ o ɔ p r s t ts u v ʋ w y z'
 
-type Status = 'checking' | 'not-configured' | 'connected' | 'unreachable'
-
-const STATUS_TEXT: Record<Status, string> = {
-  checking: 'Checking…',
-  'not-configured': 'Not set up yet. This is expected until the Supabase keys are added.',
-  connected: 'Connected to Supabase ✓',
-  unreachable: 'Keys are set, but Supabase could not be reached. Check the URL and key.',
+const KEY_LABEL: Record<string, string> = {
+  publishable: 'publishable key ✓',
+  anon: 'anon public key ✓',
+  secret: 'SECRET key ✗',
+  service_role: 'service_role (secret) key ✗',
+  unknown: 'not recognised',
+  missing: 'missing',
 }
 
 export default function App() {
-  const [status, setStatus] = useState<Status>('checking')
+  const [result, setResult] = useState<ConnectionResult | null>(null)
 
   useEffect(() => {
-    checkConnection().then(setStatus)
+    checkConnection().then(setResult)
   }, [])
 
   return (
@@ -97,9 +97,26 @@ export default function App() {
 
       <section className="card">
         <h2>4. Database</h2>
-        <p className={`status status-${status}`} role="status">
-          {STATUS_TEXT[status]}
-        </p>
+        {!result && <p className="status status-checking" role="status">Checking…</p>}
+        {result?.state === 'connected' && (
+          <p className="status status-connected" role="status">Connected to Supabase ✓</p>
+        )}
+        {result?.state === 'not-configured' && (
+          <p className="status status-not-configured" role="status">
+            Not set up yet. Missing setting: {result.missing.join(', ')}
+          </p>
+        )}
+        {result?.state === 'problem' && (
+          <p className="status status-unreachable" role="status">{result.reason}</p>
+        )}
+        {result && result.state !== 'not-configured' && (
+          <dl className="diag">
+            <dt>Address used</dt>
+            <dd>{('host' in result && result.host) || '—'}</dd>
+            <dt>Key type</dt>
+            <dd>{KEY_LABEL[keyKind()]}</dd>
+          </dl>
+        )}
       </section>
     </main>
   )

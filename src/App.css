@@ -88,3 +88,17 @@
 .status-unreachable {
   color: var(--color-error);
 }
+
+.diag {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-small);
+  color: var(--color-text-muted);
+}
+.diag dd {
+  margin: 0;
+  color: var(--color-text);
+  word-break: break-all;
+}
