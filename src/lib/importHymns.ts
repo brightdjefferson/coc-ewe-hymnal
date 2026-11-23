@@ -189,7 +189,8 @@ export function parseCsv(text: string): string[][] {
   return rows.filter((r) => r.some((x) => x.trim() !== ''))
 }
 
-const KEY_ALIASES: Record<string, keyof RawHymn> = {
+type TextKey = Exclude<keyof RawHymn, 'crossesPage'>
+const KEY_ALIASES: Record<string, TextKey> = {
   collection: 'collection', number: 'number', no: 'number', hymn: 'number',
   ewetitle: 'title_ee', titleee: 'title_ee', englishtitle: 'title_en', titleen: 'title_en',
   categories: 'categories', category: 'categories', rights: 'rights', rightsstatus: 'rights',
