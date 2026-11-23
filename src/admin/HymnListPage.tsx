@@ -114,7 +114,9 @@ export default function HymnListPage() {
       {hymns && hymns.length === 0 && (
         <div className="card empty">
           <h2>No hymns yet</h2>
-          <p>Click “Add hymn” to type or paste your first one.</p>
+          <p>
+            Click “Add hymn” to type or paste one, or <Link to="/admin/upload">upload many at once</Link> from a Word file.
+          </p>
         </div>
       )}
       {hymns && hymns.length > 0 && shown.length === 0 && <p className="muted">No hymns match.</p>}

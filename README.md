@@ -72,7 +72,7 @@ src/
   components/    shared pieces: Ewe character buttons, hymn text display
 supabase/
   migrations/    the database tables and security rules, numbered in order (Phase 1)
-templates/       downloadable CSV/JSON templates for bulk upload (Phase 5)
+public/templates/ the Word typing template offered on the upload page
 docs/            plain-language guides for admins
 scripts/         maintenance notes (e.g. how the fonts were built)
 ```
@@ -92,6 +92,7 @@ loaded from Google or any other outside server.
 - [x] **Phase 0**: project setup, accounts, Ewe character check
 - [x] **Phase 1**: database, security rules, admin login and hymn editor
 - [x] **Phase 2**: reader app (library, lists, hymn view, search, categories)
+- [x] **Bulk upload** (brought forward from Phase 5): Word, CSV and JSON, with preview
 - [ ] **Phase 3**: offline use and automatic updates
 - [ ] **Phase 3b**: melody playback
 - [ ] **Phase 4**: service queue, sermon notes, Hymn of the Day

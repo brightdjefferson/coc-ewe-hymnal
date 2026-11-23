@@ -7,6 +7,7 @@ import AdminLayout from './admin/AdminLayout.tsx'
 import HymnListPage from './admin/HymnListPage.tsx'
 import HymnEditorPage from './admin/HymnEditorPage.tsx'
 import TaxonomyPage from './admin/TaxonomyPage.tsx'
+import UploadPage from './admin/UploadPage.tsx'
 import ReaderLayout from './reader/ReaderLayout.tsx'
 import HomePage from './reader/HomePage.tsx'
 import CollectionPage from './reader/CollectionPage.tsx'
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'hymns/new', element: <HymnEditorPage /> },
       { path: 'hymns/:id', element: <HymnEditorPage /> },
       { path: 'lists', element: <TaxonomyPage /> },
+      { path: 'upload', element: <UploadPage /> },
     ],
   },
 ])

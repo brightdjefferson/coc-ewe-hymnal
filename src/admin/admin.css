@@ -304,3 +304,106 @@
 .bulk-list .in-cat {
   margin-left: auto;
 }
+
+/* ---------- Bulk upload ---------- */
+.upload .card h2 {
+  font-size: var(--text-large);
+}
+.dropzone {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+.dropzone.over {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+}
+.dropzone p {
+  margin: 0;
+}
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-3);
+  font-weight: 700;
+}
+.summary-list .ok {
+  color: var(--color-ok);
+}
+.summary-list .bad {
+  color: var(--color-error);
+}
+.alert ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.import-rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.import-rows > li + li {
+  border-top: 1px solid var(--color-border);
+}
+.import-rows > li.bad {
+  background: color-mix(in srgb, var(--color-error) 6%, transparent);
+}
+.import-row {
+  display: grid;
+  grid-template-columns: 1.5rem 2.5rem 1fr auto;
+  gap: var(--space-2);
+  align-items: start;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-height: var(--tap-size);
+}
+.import-row .mark {
+  font-weight: 700;
+}
+li.ok .mark,
+li.warn .mark {
+  color: var(--color-ok);
+}
+li.bad .mark {
+  color: var(--color-error);
+}
+.import-row .num {
+  font-weight: 700;
+  color: var(--color-primary);
+  text-align: right;
+}
+.row-error {
+  color: var(--color-error);
+  font-size: var(--text-small);
+  font-weight: 700;
+}
+.row-warn {
+  color: var(--color-warn);
+  font-size: var(--text-small);
+}
+.import-preview {
+  padding: var(--space-3);
+  border-top: 1px dashed var(--color-border);
+}
+@media (max-width: 600px) {
+  .admin-who {
+    display: none;
+  }
+  .admin-bar .btn-quiet {
+    margin-left: auto;
+  }
+}
