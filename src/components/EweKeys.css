@@ -1,0 +1,44 @@
+.ewe-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--space-2);
+}
+.ewe-key {
+  min-width: var(--tap-size);
+  min-height: var(--tap-size);
+  padding: 0 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-lyrics);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.ewe-key:hover {
+  border-color: var(--color-primary);
+}
+.ewe-key:active {
+  background: var(--color-bg);
+}
+.ewe-key.shift {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+}
+.ewe-key.shift.on {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+.ewe-key.tone {
+  font-size: 1.35rem;
+}
+.ewe-sep {
+  width: 1px;
+  align-self: stretch;
+  background: var(--color-border);
+  margin: 4px 2px;
+}
