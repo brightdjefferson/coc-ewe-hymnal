@@ -65,6 +65,9 @@ export default function AdminLayout() {
             Hymns
           </NavLink>
           <NavLink to="/admin/upload">Upload many</NavLink>
+          <NavLink to="/admin/checks">Checks</NavLink>
+          <NavLink to="/admin/history">History</NavLink>
+          <NavLink to="/admin/export">Export</NavLink>
           <NavLink to="/admin/lists">Collections &amp; categories</NavLink>
           <a href="/" target="_blank" rel="noopener">
             Reader app ↗

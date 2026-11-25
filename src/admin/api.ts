@@ -114,14 +114,10 @@ export async function fetchHymnList(): Promise<HymnListItem[]> {
   })
 }
 
-export async function fetchHymn(id: string): Promise<HymnRecord | null> {
-  const { data, error } = await db()
-    .from('hymns')
-    .select('*, verses(lang, position, kind, body), hymn_categories(category_id)')
-    .eq('id', id)
-    .maybeSingle()
-  throwIf(error)
-  if (!data) return null
+const HYMN_FULL = '*, verses(lang, position, kind, body), hymn_categories(category_id)'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toRecord(data: any): HymnRecord {
   const verses = [...(data.verses as { lang: string; position: number; kind: VerseKind; body: string }[])].sort(
     (a, b) => a.position - b.position,
   )
@@ -140,6 +136,43 @@ export async function fetchHymn(id: string): Promise<HymnRecord | null> {
     ee: verses.filter((v) => v.lang === 'ee').map(({ kind, body }) => ({ kind, body })),
     en: verses.filter((v) => v.lang === 'en').map(({ kind, body }) => ({ kind, body })),
   }
+}
+
+export async function fetchHymn(id: string): Promise<HymnRecord | null> {
+  const { data, error } = await db().from('hymns').select(HYMN_FULL).eq('id', id).maybeSingle()
+  throwIf(error)
+  return data ? toRecord(data) : null
+}
+
+/** Every hymn with its words (drafts too), 500 at a time. */
+export async function fetchAllHymns(onProgress?: (n: number) => void): Promise<HymnRecord[]> {
+  const out: HymnRecord[] = []
+  for (let from = 0; ; from += 500) {
+    const { data, error } = await db().from('hymns').select(HYMN_FULL).order('id').range(from, from + 499)
+    throwIf(error)
+    out.push(...(data ?? []).map(toRecord))
+    onProgress?.(out.length)
+    if (!data || data.length < 500) return out
+  }
+}
+
+/** All changes by all admins, newest first. */
+export async function fetchChanges(
+  opts: { before?: string; email?: string; action?: string; limit?: number } = {},
+): Promise<HistoryEntry[]> {
+  let q = db().from('hymn_history').select('*').order('changed_at', { ascending: false }).order('id', { ascending: false })
+  if (opts.before) q = q.lt('changed_at', opts.before)
+  if (opts.email) q = q.eq('changed_by_email', opts.email)
+  if (opts.action) q = q.eq('action', opts.action)
+  const { data, error } = await q.limit(opts.limit ?? 100)
+  throwIf(error)
+  return (data ?? []) as HistoryEntry[]
+}
+
+export async function fetchAdminEmails(): Promise<string[]> {
+  const { data, error } = await db().from('admins').select('email').order('email')
+  throwIf(error)
+  return (data ?? []).map((a: { email: string }) => a.email)
 }
 
 export async function saveHymn(h: HymnData): Promise<string> {

@@ -239,7 +239,7 @@
   background: color-mix(in srgb, var(--color-primary) 14%, transparent);
   color: var(--color-primary);
 }
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
   .admin-nav {
     order: 0;
     width: auto;
@@ -406,4 +406,104 @@ li.bad .mark {
   .admin-bar .btn-quiet {
     margin-left: auto;
   }
+}
+
+/* ---------- Export ---------- */
+.export-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.export-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.export-list .btn {
+  min-width: 13rem;
+}
+
+/* ---------- Content checks ---------- */
+.check-level {
+  font-size: 1rem;
+  margin: var(--space-4) 0 var(--space-2);
+}
+.check-level.fix { color: var(--color-error); }
+.check-level.look { color: var(--color-warn); }
+.check-group summary {
+  cursor: pointer;
+  min-height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.check-group .count {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 1px 9px;
+  border-radius: 999px;
+  background: var(--color-surface-2);
+}
+.check-group ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+/* ---------- Change history ---------- */
+.change-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.change-day {
+  font-size: 0.95rem;
+  margin: var(--space-4) 0 var(--space-1);
+  color: var(--color-text-muted);
+}
+.change-row {
+  display: grid;
+  grid-template-columns: 5rem auto 1fr;
+  gap: 0.25rem 0.75rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+.change-row time {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  font-size: var(--text-small);
+}
+.change-who {
+  grid-column: 3;
+}
+.badge.act-create, .badge.act-publish, .badge.act-restore {
+  background: color-mix(in srgb, var(--color-ok) 15%, transparent);
+  color: var(--color-ok);
+}
+.badge.act-edit {
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  color: var(--color-primary);
+}
+.badge.act-unpublish {
+  background: color-mix(in srgb, var(--color-warn) 15%, transparent);
+  color: var(--color-warn);
+}
+.badge.act-delete {
+  background: color-mix(in srgb, var(--color-error) 13%, transparent);
+  color: var(--color-error);
+}
+.changes > .btn {
+  margin-top: var(--space-3);
+}
+.change-row time {
+  white-space: nowrap;
+}
+.change-what a {
+  color: var(--color-primary);
+  font-weight: 700;
 }

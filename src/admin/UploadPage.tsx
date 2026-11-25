@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { useAdmin } from './AdminLayout'
+import { download } from './download'
 import { fetchHymnList, friendlyError, saveHymn, setHymnStatus, RIGHTS_LABELS } from './api'
 import {
   checkHymns,
@@ -54,14 +55,6 @@ async function readFile(file: File): Promise<{ hymns: RawHymn[]; problem?: strin
   return { hymns: [], problem: 'Please choose a Word (.docx), PDF (.pdf), CSV (.csv) or JSON (.json) file.' }
 }
 
-function download(name: string, content: string, type: string) {
-  const url = URL.createObjectURL(new Blob([content], { type }))
-  const a = document.createElement('a')
-  a.href = url
-  a.download = name
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-}
 
 export default function UploadPage() {
   const { collections, categories } = useAdmin()

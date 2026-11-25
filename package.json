@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.2",
+    "docx": "^9.16.0",
     "idb": "^8.0.4",
     "mammoth": "^1.13.0",
     "pdfjs-dist": "^6.5.438",

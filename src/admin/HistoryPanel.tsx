@@ -3,7 +3,7 @@ import { fetchHistory, friendlyError, restoreHymn, type HistoryEntry } from './a
 import HymnText from '../components/HymnText'
 import ConfirmDialog from './ConfirmDialog'
 
-const ACTION_TEXT: Record<HistoryEntry['action'], string> = {
+export const ACTION_TEXT: Record<HistoryEntry['action'], string> = {
   create: 'Created',
   edit: 'Edited',
   publish: 'Published',

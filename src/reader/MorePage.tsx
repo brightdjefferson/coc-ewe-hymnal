@@ -7,6 +7,7 @@ const ICONS: Record<string, string> = {
   categories: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
   notes: 'M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h5',
   settings: 'M4 7h10M18 7h2M4 17h4M12 17h8M14 5v4M8 15v4',
+  privacy: 'M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6zM9 12l2 2 4-4',
   favourites: 'M12 20s-7-4.4-8.7-8.6C2 8.3 4 5 7.2 5c1.9 0 3.2 1 4.8 2.8C13.6 6 14.9 5 16.8 5 20 5 22 8.3 20.7 11.4 19 15.6 12 20 12 20z',
 }
 
@@ -19,7 +20,8 @@ export default function MorePage() {
           ['/categories', 'Categories', 'categories', 'Hymns for worship, the Lord’s Supper, baptism…'],
           ['/notes', 'Sermon notes', 'notes', 'Write down scriptures and key points'],
           ['/favorites', 'Favourites & recent', 'favourites', 'Hymns you saved with ♡'],
-          ['/settings', 'Settings', 'settings', 'Text size, dark mode, language, install, updates'],
+          ['/settings', 'Settings', 'settings', 'Text size, dark mode, language, reminder, updates'],
+          ['/privacy', 'Privacy', 'privacy', 'What the app keeps, and where'],
         ].map(([to, label, icon, sub]) => (
           <li key={to}>
             <Link to={to} className="cat-row more-row">

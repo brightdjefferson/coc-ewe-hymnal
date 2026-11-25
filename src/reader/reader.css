@@ -1111,3 +1111,57 @@ mark {
   width: auto;
   min-width: 8.5rem;
 }
+
+/* ---------- Plain reading pages (Privacy) ---------- */
+.prose {
+  max-width: 42rem;
+}
+.prose h2 {
+  font-size: 1.1rem;
+  margin: var(--space-4) 0 var(--space-1);
+}
+.prose p {
+  line-height: 1.6;
+  margin: 0 0 var(--space-2);
+}
+
+/* ---------- Large text on small phones: wrap instead of overflowing ---------- */
+.cat-list > li {
+  min-width: 0;
+}
+.cat-row > span,
+.more-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.more-row > span {
+  display: flex;
+  flex-direction: column;
+}
+.prose {
+  overflow-wrap: anywhere;
+}
+.page-title {
+  flex-wrap: wrap;
+}
+.page-title .jump-btn {
+  flex: none;
+}
+.collection-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+/* With big text, fewer columns so names fit without breaking words */
+.quick-links {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(8rem * var(--text-scale))), 1fr));
+}
+.quick-link {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 639px) {
+  .collection-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(8rem * var(--text-scale))), 1fr));
+  }
+}

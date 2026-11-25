@@ -9,6 +9,10 @@ import HymnListPage from './admin/HymnListPage.tsx'
 import HymnEditorPage from './admin/HymnEditorPage.tsx'
 import TaxonomyPage from './admin/TaxonomyPage.tsx'
 import UploadPage from './admin/UploadPage.tsx'
+import PrivacyPage from './reader/PrivacyPage.tsx'
+import ExportPage from './admin/ExportPage.tsx'
+import ChecksPage from './admin/ChecksPage.tsx'
+import ChangesPage from './admin/ChangesPage.tsx'
 import ReaderLayout from './reader/ReaderLayout.tsx'
 import HomePage from './reader/HomePage.tsx'
 import CollectionPage from './reader/CollectionPage.tsx'
@@ -38,6 +42,7 @@ const router = createBrowserRouter([
       { path: 'notes', element: <NotesListPage /> },
       { path: 'notes/:id', element: <NotePage /> },
       { path: 'more', element: <MorePage /> },
+      { path: 'privacy', element: <PrivacyPage /> },
       { path: '*', element: <HomePage /> },
     ],
   },
@@ -51,6 +56,9 @@ const router = createBrowserRouter([
       { path: 'hymns/:id', element: <HymnEditorPage /> },
       { path: 'lists', element: <TaxonomyPage /> },
       { path: 'upload', element: <UploadPage /> },
+      { path: 'export', element: <ExportPage /> },
+      { path: 'checks', element: <ChecksPage /> },
+      { path: 'history', element: <ChangesPage /> },
     ],
   },
 ])

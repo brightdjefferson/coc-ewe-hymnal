@@ -14,7 +14,7 @@ const NAV = [
   { to: '/more', label: 'More', icon: 'M5 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z' },
 ]
 
-const MORE_PATHS = ['/more', '/settings', '/categories', '/notes']
+const MORE_PATHS = ['/more', '/settings', '/categories', '/notes', '/privacy']
 
 export default function ReaderLayout() {
   useApplySettings()

@@ -33,7 +33,7 @@ export default defineConfig({
         // separately (IndexedDB), so database calls are never cached here.
         globPatterns: ['**/*.{js,css,html,woff2,svg,png}'],
         // Word/PDF readers are only for the admin upload page: not kept offline.
-        globIgnores: ['**/mammoth*', '**/pdf-*', '**/pdf.worker*', '**/pdfLines*', 'templates/**'],
+        globIgnores: ['**/wordExport*', '**/mammoth*', '**/pdf-*', '**/pdf.worker*', '**/pdfLines*', 'templates/**'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
         // Shows the daily Hymn of the Day notification (public/push-sw.js).

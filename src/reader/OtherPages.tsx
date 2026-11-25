@@ -188,14 +188,16 @@ export function SettingsPage() {
         <h2>Text size</h2>
         <div className="size-row">
           <button className="btn size-btn" onClick={() => set({ textScale: SIZES[Math.max(0, sizeIndex - 1)] })}
-            disabled={sizeIndex === 0} aria-label="Smaller text">
-            A−
+            disabled={sizeIndex === 0}>
+            <span aria-hidden="true">A−</span>
+            <span className="sr-only">Smaller text</span>
           </button>
           <input type="range" min={0} max={SIZES.length - 1} step={1} value={sizeIndex}
             onChange={(e) => set({ textScale: SIZES[Number(e.target.value)] })} aria-label="Text size" />
           <button className="btn size-btn big" onClick={() => set({ textScale: SIZES[Math.min(SIZES.length - 1, sizeIndex + 1)] })}
-            disabled={sizeIndex === SIZES.length - 1} aria-label="Larger text">
-            A+
+            disabled={sizeIndex === SIZES.length - 1}>
+            <span aria-hidden="true">A+</span>
+            <span className="sr-only">Larger text</span>
           </button>
         </div>
         <p className="size-sample" lang="ee">
@@ -246,7 +248,7 @@ export function SettingsPage() {
           A free hymnal in Ewe and English for Churches of Christ. No ads, no accounts, no tracking. Your favourites,
           recent hymns, services, notes and settings stay on this phone and are never sent anywhere. If you turn on the
           daily reminder, only what is needed to deliver it is kept: a notification address from your browser, the time,
-          your time zone and language. Turning it off removes them.
+          your time zone and language. Turning it off removes them. <Link to="/privacy">Read more about privacy</Link>
         </p>
       </section>
     </main>

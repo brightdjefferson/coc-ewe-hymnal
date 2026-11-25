@@ -147,8 +147,9 @@ export function SearchBox({ autoFocus, initial = '', onQuery, categoryId }: {
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
         />
         <button type="button" className={`btn btn-quiet ewe-toggle${keys ? ' on' : ''}`} aria-pressed={keys}
-          onClick={() => setKeys((k) => !k)} title="Show Ewe letters" aria-label="Show Ewe letter buttons">
-          ɛɔ
+          onClick={() => setKeys((k) => !k)} title="Show Ewe letters">
+          <span aria-hidden="true">ɛɔ</span>
+          <span className="sr-only">Ewe letters</span>
         </button>
       </div>
       {keys && <EweKeys compact target={inputRef} value={q} onChange={change} />}

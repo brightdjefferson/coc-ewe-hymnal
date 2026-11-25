@@ -35,6 +35,9 @@ export default function EweKeys({ target, value, onChange, compact }: Props) {
     const pos = start + text.length
     requestAnimationFrame(() => {
       if (!el) return
+      // Don't pull the cursor back if the person has already moved to another box.
+      const now = document.activeElement as HTMLElement | null
+      if (now && now !== document.body && now !== el && !now.closest('.ewe-keys')) return
       el.focus()
       el.setSelectionRange(pos, pos)
     })

@@ -36,6 +36,12 @@ a.button {
   font: inherit;
 }
 
+/* Links inside sentences */
+:where(p, li) > a:not([class]) {
+  color: var(--color-accent);
+  text-underline-offset: 2px;
+}
+
 :focus-visible {
   outline: 3px solid var(--color-accent);
   outline-offset: 2px;
