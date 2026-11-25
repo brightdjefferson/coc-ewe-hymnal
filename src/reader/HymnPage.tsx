@@ -6,6 +6,8 @@ import type { Hymn, Lang } from '../lib/types'
 import { displayName, useLibrary } from './library'
 import { useFavorites, useRecent, useSettings } from './prefs'
 import { JumpToNumber } from './components'
+import { formatDate, useServices } from './personal'
+import ConfirmDialog from '../admin/ConfirmDialog'
 import '../components/HymnText.css'
 
 const LANG_LABEL: Record<Lang, string> = { ee: 'Ewe', en: 'English', both: 'Both' }
@@ -19,6 +21,9 @@ export default function HymnPage() {
   const recent = useRecent()
   const [jump, setJump] = useState(false)
   const [sizeOpen, setSizeOpen] = useState(false)
+  const svc = useServices()
+  const [picking, setPicking] = useState(false)
+  const [added, setAdded] = useState<{ id: string; name: string } | null>(null)
   const touch = useRef<{ x: number; y: number } | null>(null)
 
   const col = collectionBySlug(slug ?? '')
@@ -62,6 +67,16 @@ export default function HymnPage() {
   const cats = library.categories.filter((c) => hymn.category_ids.includes(c.id))
   const isFav = fav.has(hymn.id)
 
+  function addTo(serviceId: string | null) {
+    setPicking(false)
+    const ref = `${col!.slug}.${hymn!.number}`
+    const s = serviceId ? svc.byId(serviceId) : svc.create()
+    if (!s) return
+    svc.addItem(s.id, { hymnId: hymn!.id, ref })
+    svc.setCurrent(s.id)
+    setAdded({ id: s.id, name: s.name })
+  }
+
   return (
     <main
       className="page-pad hymn-page"
@@ -85,6 +100,11 @@ export default function HymnPage() {
           </svg>
         </Link>
         <span className="spacer" />
+        <button className="sq-btn" onClick={() => (svc.services.length ? setPicking(true) : addTo(null))} aria-label="Add to service" title="Add to service">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" aria-hidden="true">
+            <path d="M4 6h11M4 11h11M4 16h7M18 13v8M14 17h8" />
+          </svg>
+        </button>
         <button className={`sq-btn${sizeOpen ? ' on' : ''}`} onClick={() => setSizeOpen((v) => !v)} aria-expanded={sizeOpen} aria-label="Text size">
           Aa
         </button>
@@ -105,6 +125,28 @@ export default function HymnPage() {
             A+
           </button>
         </div>
+      )}
+
+      {added && (
+        <p className="added-note" role="status">
+          ✓ Added to <Link to={`/services/${added.id}`}>{added.name}</Link>
+        </p>
+      )}
+      {picking && (
+        <ConfirmDialog title="Add to which service?" confirmLabel="+ New service" cancelLabel="Cancel" onConfirm={() => addTo(null)} onCancel={() => setPicking(false)}>
+          <ul className="pick-list">
+            {[...(svc.current ? [svc.current] : []), ...svc.services.filter((x) => x.id !== svc.current?.id)].slice(0, 6).map((x) => (
+              <li key={x.id}>
+                <button className="btn btn-wide" onClick={() => addTo(x.id)}>
+                  <span>{x.name}</span>
+                  <span className="muted small">
+                    {formatDate(x.date)} · {x.items.length}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </ConfirmDialog>
       )}
 
       <header className="hymn-head">
@@ -184,7 +226,7 @@ function Missing({ which, onSwitch }: { which: 'ee' | 'en'; onSwitch?: () => voi
   )
 }
 
-function Words({ hymn, lang, onSwitch }: { hymn: Hymn; lang: Lang; onSwitch: (l: Lang) => void }) {
+export function Words({ hymn, lang, onSwitch }: { hymn: Hymn; lang: Lang; onSwitch: (l: Lang) => void }) {
   const { ee, en } = hymn
   if (ee.length === 0 && en.length === 0) return <div className="missing"><p>The words for this hymn have not been added yet.</p></div>
 

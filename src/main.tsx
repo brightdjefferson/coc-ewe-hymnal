@@ -14,6 +14,9 @@ import HomePage from './reader/HomePage.tsx'
 import CollectionPage from './reader/CollectionPage.tsx'
 import HymnPage from './reader/HymnPage.tsx'
 import { CategoriesPage, CategoryPage, FavoritesPage, SearchPage, SettingsPage } from './reader/OtherPages.tsx'
+import { PlayPage, ServicePage, ServicesListPage, SharedServicePage } from './reader/ServicesPages.tsx'
+import { NotePage, NotesListPage } from './reader/NotesPages.tsx'
+import MorePage from './reader/MorePage.tsx'
 
 const router = createBrowserRouter([
   {
@@ -28,6 +31,13 @@ const router = createBrowserRouter([
       { path: 'categories/:slug', element: <CategoryPage /> },
       { path: 'favorites', element: <FavoritesPage /> },
       { path: 'settings', element: <SettingsPage /> },
+      { path: 'services', element: <ServicesListPage /> },
+      { path: 'services/:id', element: <ServicePage /> },
+      { path: 'services/:id/play/:index', element: <PlayPage /> },
+      { path: 's', element: <SharedServicePage /> },
+      { path: 'notes', element: <NotesListPage /> },
+      { path: 'notes/:id', element: <NotePage /> },
+      { path: 'more', element: <MorePage /> },
       { path: '*', element: <HomePage /> },
     ],
   },

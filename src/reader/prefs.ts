@@ -17,7 +17,7 @@ export const DEFAULT_SETTINGS: Settings = { textScale: 1, theme: 'system', lang:
 const listeners = new Set<() => void>()
 const cache = new Map<string, unknown>()
 
-function read<T>(key: string, fallback: T): T {
+export function read<T>(key: string, fallback: T): T {
   if (cache.has(key)) return cache.get(key) as T
   let v = fallback
   try {
@@ -33,7 +33,7 @@ function read<T>(key: string, fallback: T): T {
   return v
 }
 
-function write<T>(key: string, value: T) {
+export function write<T>(key: string, value: T) {
   cache.set(key, value)
   try {
     localStorage.setItem(PREFIX + key, JSON.stringify(value))
@@ -58,7 +58,7 @@ function subscribe(l: () => void) {
   }
 }
 
-function useStored<T>(key: string, fallback: T): [T, (v: T) => void] {
+export function useStored<T>(key: string, fallback: T): [T, (v: T) => void] {
   const value = useSyncExternalStore(subscribe, () => read(key, fallback), () => fallback)
   const set = useCallback((v: T) => write(key, v), [key])
   return [value, set]

@@ -3,6 +3,7 @@ import { Link, useParams, useSearchParams } from 'react-router'
 import { search } from '../lib/search'
 import { displayName, useLibrary, useLibraryState, type UpdateResult } from './library'
 import { usePwa } from './usePwa'
+import { BackupCard } from './MorePage'
 import { isInstalled, isIOS } from '../pwa'
 import { DEFAULT_SETTINGS, useFavorites, useRecent, useSettings, type Settings } from './prefs'
 import { HymnRow, SearchBox } from './components'
@@ -231,6 +232,7 @@ export function SettingsPage() {
 
       <UpdatesCard />
       <InstallCard />
+      <BackupCard />
 
       <button className="btn btn-quiet" onClick={() => set(DEFAULT_SETTINGS)}>
         Reset settings

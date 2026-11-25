@@ -4,12 +4,14 @@ import { useFavorites, useRecent, useSettings } from './prefs'
 import { HymnRow, SearchBox } from './components'
 import { firstLine, hymnOfTheDay } from '../lib/hymnOfDay'
 import Logo from '../components/Logo'
+import { useServices } from './personal'
 
 export default function HomePage() {
   const { library, hymnsIn, hymnById, hymnPath, collectionById } = useLibrary()
   const [settings] = useSettings()
   const recent = useRecent()
   const fav = useFavorites()
+  const svc = useServices()
   const recentHymns = recent.ids.map(hymnById).filter((h) => !!h).slice(0, 4)
   const total = library.hymns.length
   const today = hymnOfTheDay(library.hymns)
@@ -73,6 +75,18 @@ export default function HomePage() {
       </section>
 
       <div className="quick-links">
+        <Link to="/services" className="quick-link">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 6h11M4 11h11M4 16h7M17 14l5 3.5-5 3.5z" />
+          </svg>
+          Services{svc.services.length ? ` (${svc.services.length})` : ''}
+        </Link>
+        <Link to="/notes" className="quick-link">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 3h9l4 4v14H6zM14 3v5h5M9 12h7M9 16h5" />
+          </svg>
+          Sermon notes
+        </Link>
         <Link to="/categories" className="quick-link">
           <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
             <rect x="4" y="4" width="7" height="7" rx="2" />

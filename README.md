@@ -67,7 +67,8 @@ src/
   styles/        colours, sizes, fonts, light/dark themes (tokens.css)
   lib/           connection to Supabase; later: search, offline storage
   App.tsx        character and database check page (at /check)
-  reader/        the reader app: home, lists, hymn page, search, categories, favourites, settings
+  reader/        the reader app: home, lists, hymn page, search, categories, favourites, settings,
+                 services and worship mode, sermon notes, backup (personal data: reader/personal.ts)
   admin/         the admin site (/admin): login, hymn list, editor, history, collections & categories
   components/    shared pieces: Ewe character buttons, hymn text display
 supabase/
@@ -102,7 +103,8 @@ ribbon bookmark. Source: `public/favicon.svg` (and `src/components/Logo.tsx`); a
 - [x] **Phase 3**: offline use and automatic updates
 - [x] **Design pass**: “Calm” look (night blue, sunset orange, mist), new logo, light/dark
 - [ ] **Phase 3b**: melody playback
-- [ ] **Phase 4**: service queue, sermon notes, Hymn of the Day
+- [x] **Phase 4**: service order (worship mode, sharing), sermon notes, Hymn of the Day, backup/restore
+  (daily reminders are planned for the phone app in Phase 6)
 - [ ] **Phase 5**: bulk upload/export, change history, content checks, privacy page
 - [ ] **Phase 6** (optional): App Store and Google Play
 - [ ] **Phase 7** (optional): sing to find a hymn
