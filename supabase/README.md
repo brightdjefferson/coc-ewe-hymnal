@@ -13,3 +13,12 @@ Adding an admin (run in the SQL Editor; use the email they sign in with, in lowe
 ```sql
 insert into public.admins (email) values ('person@example.com');
 ```
+
+## Daily reminders (Hymn of the Day)
+
+1. Edge Functions → Deploy a new function → Via Editor → name `send-reminders` → paste `functions/send-reminders/index.ts` → Deploy.
+2. In that function's Details/Settings, turn **off** "Verify JWT" and save.
+3. SQL Editor → run `migrations/0003_reminders.sql` once.
+4. Check: Table Editor → `push_keys` has a `public_key` within a minute. Integrations → Cron shows `hymn-of-the-day-reminders` every 15 minutes.
+
+No secret keys need copying: the function makes its own notification keys and the timer uses a random password stored in the database.

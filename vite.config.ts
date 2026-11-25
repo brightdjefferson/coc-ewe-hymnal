@@ -36,6 +36,8 @@ export default defineConfig({
         globIgnores: ['**/mammoth*', '**/pdf-*', '**/pdf.worker*', '**/pdfLines*', 'templates/**'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
+        // Shows the daily Hymn of the Day notification (public/push-sw.js).
+        importScripts: ['push-sw.js'],
         clientsClaim: true,
       },
     }),

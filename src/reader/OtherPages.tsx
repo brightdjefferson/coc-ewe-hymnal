@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { search } from '../lib/search'
 import { displayName, useLibrary, useLibraryState, type UpdateResult } from './library'
 import { usePwa } from './usePwa'
 import { BackupCard } from './MorePage'
 import { isInstalled, isIOS } from '../pwa'
-import { DEFAULT_SETTINGS, useFavorites, useRecent, useSettings, type Settings } from './prefs'
+import { DEFAULT_SETTINGS, useFavorites, useRecent, useSettings, useStored, type Settings } from './prefs'
+import { DEFAULT_REMINDER, REMINDER_KEY, ReminderError, reminderSupport, removeReminder, saveReminder, type Reminder } from './reminders'
 import { HymnRow, SearchBox } from './components'
 import { CategoryChips } from './CategoryChips'
 import type { Lang } from '../lib/types'
@@ -230,6 +231,7 @@ export function SettingsPage() {
         />
       </section>
 
+      <ReminderCard lang={s.lang} />
       <UpdatesCard />
       <InstallCard />
       <BackupCard />
@@ -242,7 +244,9 @@ export function SettingsPage() {
         <h2>About</h2>
         <p>
           A free hymnal in Ewe and English for Churches of Christ. No ads, no accounts, no tracking. Your favourites,
-          recent hymns and settings stay on this phone and are never sent anywhere.
+          recent hymns, services, notes and settings stay on this phone and are never sent anywhere. If you turn on the
+          daily reminder, only what is needed to deliver it is kept: a notification address from your browser, the time,
+          your time zone and language. Turning it off removes them.
         </p>
       </section>
     </main>
@@ -263,6 +267,82 @@ function Choice<T extends string>({ value, onChange, options, label }: {
         </button>
       ))}
     </div>
+  )
+}
+
+function ReminderCard({ lang }: { lang: Lang }) {
+  const [r, setR] = useStored<Reminder>(REMINDER_KEY, DEFAULT_REMINDER)
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null)
+  const support = reminderSupport()
+  const savedLang = useRef(lang)
+
+  async function apply(next: Reminder) {
+    setBusy(true)
+    setMsg(null)
+    try {
+      if (next.on) {
+        await saveReminder(next.time, lang)
+        setMsg({ text: `Reminder set for ${next.time} every day.` })
+      } else {
+        await removeReminder()
+        setMsg({ text: 'Reminder turned off.' })
+      }
+      setR(next)
+    } catch (e) {
+      setMsg({ text: e instanceof ReminderError ? e.message : 'Something went wrong. Please try again.', bad: true })
+      if (!next.on) setR(next) // turning off always counts on this phone
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  // The reminder follows the reading language chosen above.
+  useEffect(() => {
+    if (savedLang.current === lang) return
+    savedLang.current = lang
+    if (r.on && support === 'ok') saveReminder(r.time, lang).catch(() => {})
+  }, [lang, r.on, r.time, support])
+
+  return (
+    <section className="card">
+      <h2>Daily reminder</h2>
+      <p className="muted small">A notification each day with the Hymn of the Day. Tap it to open the hymn.</p>
+      {support === 'ios-install' ? (
+        <p className="small">
+          On iPhone, reminders work once the hymnal is on your home screen (see “Put the hymnal on your home screen”
+          below). Then open it from the home screen and come back here.
+        </p>
+      ) : support === 'unsupported' ? (
+        <p className="small">This browser can’t show reminders. Try Chrome on Android, or Safari on iPhone.</p>
+      ) : (
+        <>
+          <label className="switch-row">
+            <input type="checkbox" role="switch" checked={r.on} disabled={busy}
+              onChange={(e) => apply({ ...r, on: e.target.checked })} />
+            <span>Remind me every day</span>
+          </label>
+          <label className="field-row">
+            <span>Time</span>
+            <input type="time" value={r.time} disabled={busy}
+              onChange={(e) => e.target.value && (r.on ? apply({ on: true, time: e.target.value }) : setR({ ...r, time: e.target.value }))} />
+          </label>
+          {support === 'blocked' && (
+            <p className="small">
+              Notifications are blocked for the hymnal. To allow them, open your phone’s settings for this app or browser,
+              choose <strong>Notifications</strong> and turn them on, then come back here.
+            </p>
+          )}
+          <p className="muted small">It may arrive up to 15 minutes after the time you choose.</p>
+        </>
+      )}
+      {busy && <p className="small" role="status">Saving…</p>}
+      {msg && !busy && (
+        <p className={"small" + (msg.bad ? " field-error" : "")} role="status">
+          {msg.text}
+        </p>
+      )}
+    </section>
   )
 }
 

@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { LibraryProvider, useLibraryState } from './library'
-import { useApplySettings } from './prefs'
+import { useApplySettings, useSettings } from './prefs'
+import { refreshReminder } from './reminders'
 import { usePwa } from './usePwa'
 import './reader.css'
 
@@ -17,7 +18,12 @@ const MORE_PATHS = ['/more', '/settings', '/categories', '/notes']
 
 export default function ReaderLayout() {
   useApplySettings()
+  const [settings] = useSettings()
   const { pathname } = useLocation()
+  // Keeps an active daily reminder up to date (at most once a week).
+  useEffect(() => {
+    refreshReminder(settings.lang)
+  }, [settings.lang])
   const playing = /^\/services\/[^/]+\/play/.test(pathname)
   return (
     <LibraryProvider>

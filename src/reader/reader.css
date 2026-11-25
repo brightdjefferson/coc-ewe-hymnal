@@ -1082,3 +1082,32 @@ mark {
 .shared-list {
   margin: var(--space-3) 0;
 }
+
+/* ---------- Daily reminder ---------- */
+.switch-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: var(--tap-size);
+  font-weight: 700;
+  cursor: pointer;
+}
+.switch-row input {
+  width: 1.4rem;
+  height: 1.4rem;
+  accent-color: var(--color-accent);
+}
+.field-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+}
+.field-row > span {
+  font-weight: 700;
+  min-width: 3rem;
+}
+.field-row input[type='time'] {
+  width: auto;
+  min-width: 8.5rem;
+}
