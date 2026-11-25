@@ -423,8 +423,7 @@ grant execute on function public.save_hymn(jsonb),
 insert into public.collections (slug, name_en, sort_order) values
   ('hymns',         'Hymns',         1),
   ('choruses',      'Choruses',      2),
-  ('praises',       'Praises',       3),
-  ('english-hymns', 'English Hymns', 4);
+  ('english-hymns', 'English Hymns', 3);  -- "Praises" removed: same as Choruses
 
 insert into public.categories (slug, name_en, sort_order) values
   ('worship',      'Worship',       1),
