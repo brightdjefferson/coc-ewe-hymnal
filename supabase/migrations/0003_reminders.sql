@@ -13,9 +13,10 @@
 --
 -- Run it ONCE in Supabase, AFTER creating the "send-reminders" function:
 -- SQL Editor -> New query -> paste -> Run. Nothing existing is changed.
+-- Safe to run again: anything already there is kept.
 -- =====================================================================
 
-create table public.push_subscriptions (
+create table if not exists public.push_subscriptions (
   id             uuid primary key default gen_random_uuid(),
   endpoint       text unique not null,
   p256dh         text not null,
@@ -29,14 +30,14 @@ create table public.push_subscriptions (
   updated_at     timestamptz not null default now()
 );
 
-create table public.push_keys (
+create table if not exists public.push_keys (
   id           int primary key default 1 check (id = 1),
   public_key   text,            -- shared with phones (made by the sender)
   private_jwk  jsonb,           -- never leaves the database / sender
   cron_token   text not null default replace(gen_random_uuid()::text || gen_random_uuid()::text, '-', ''),
   created_at   timestamptz not null default now()
 );
-insert into public.push_keys (id) values (1);
+insert into public.push_keys (id) values (1) on conflict (id) do nothing;
 
 -- Locked: only the reminder sender (service role) can read these tables.
 alter table public.push_subscriptions enable row level security;
